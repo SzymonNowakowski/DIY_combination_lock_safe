@@ -1,6 +1,6 @@
-# DIY wooden case
+# DIY combination lock safe
 
-A DIY wooden case design for laser-cutting from plywood
+A DIY three-dial combination-lock project for laser-cutting from plywood
 
 # Assembly insructions
 
