@@ -19,14 +19,55 @@ if (case_depth_in_feathers <= 0 | case_width_in_feathers <=0 |
     base_height_in_feathers <= 0 | lid_height_in_feathers <= 0)
   stop("The dimensions must be positive multiplicities of the feather length")
 
-draw_dial <- function(x, y, r) {
+pixel_cnt <- 7
+
+draw_dial <- function(x, y, r, pixel_vector) {
+  if (length(pixel_vector) != pixel_cnt)
+    stop("Pixel vector must have pixel_cnt positions")
+  
   angle <- 0
   current_point <- c(x + cos(angle) * r, y + sin(angle) * r)
-  for (i in 1:10) {
-    angle = i * (2*pi / 10)
+  for (side in 1:10) {
+    angle = side * (2*pi / 10)
     next_point <- c(x + cos(angle) * r, y + sin(angle) * r)
-    lines(c(current_point[1], next_point[1]), c(current_point[2], next_point[2]))
+    #lines(c(current_point[1], next_point[1]), c(current_point[2], next_point[2]))
+    #instead of plotting a single line, this line will be divided into 7 regions and the regions will be plotted separately
+    region_start <- current_point
+    for (region in 1:pixel_cnt) {
+      region_end <- current_point + region * (next_point - current_point) / pixel_cnt
+      if (pixel_vector[region]) {   #if it is pixeled, we must make a little protruding pixel if it is the first one or it is after non-pixeled, move right-perpendicuraly 20%, then move along, then again: perpendicuraly, but only if this is the last one or after this one, there is a non-pixeled
+        # compute the 20% vector along
+        
+        vector_along <- (region_end - region_start) * 50/100
+        right_perpendicular_vector <- c(vector_along[2], -vector_along[1])   #(-b, a) is right-perpendicular to a vector (a,b)
+
+        if (region == 1 || !pixel_vector[region-1]) {  #lazy evaluation of || operator
+          part_start <- region_start
+          part_end <- region_start + right_perpendicular_vector
+          lines(c(part_start[1], part_end[1]), c(part_start[2], part_end[2]))
+        } #otherwise,  part_end is as it was in the previous region
+        
+        # the next region goes along
+        part_start <- part_end
+        part_end <- part_end + 2 * vector_along
+        lines(c(part_start[1], part_end[1]), c(part_start[2], part_end[2]))
+        
+        # the return is perpendicular
+        if (region == pixel_cnt || !pixel_vector[region+1]) {  #lazy evaluation of || operator
+          part_start <- part_end
+          part_end <- part_end - right_perpendicular_vector
+          lines(c(part_start[1], part_end[1]), c(part_start[2], part_end[2]))
+        }
+        
+      } else {    
+        lines(c(region_start[1], region_end[1]), c(region_start[2], region_end[2]))
+      }
+        
+      region_start <- region_end
+    }
+      
     current_point <- next_point
+    
   }
 }
 
@@ -155,6 +196,6 @@ open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm, cas
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/dial.pdf", 40, 40, 10)
-draw_dial(20, 20, 15)
+open.pdf("design_PDFs/diial_.pdf", 40, 40, 10)
+draw_dial(20, 20, 15, pixel_vector = c(T, F, T,T, F,F,T))
 close.pdf()
