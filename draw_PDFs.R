@@ -196,6 +196,6 @@ open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm, cas
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/diial_.pdf", 40, 40, 10)
+open.pdf("design_PDFs/dials.pdf", 40, 40, 10)
 draw_dial(20, 20, 15, pixel_vector = c(T, F, T,T, F,F,T))
 close.pdf()
