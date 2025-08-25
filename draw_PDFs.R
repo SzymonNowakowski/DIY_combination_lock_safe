@@ -19,6 +19,16 @@ if (case_depth_in_feathers <= 0 | case_width_in_feathers <=0 |
     base_height_in_feathers <= 0 | lid_height_in_feathers <= 0)
   stop("The dimensions must be positive multiplicities of the feather length")
 
+draw_dial <- function(x, y, r) {
+  angle <- 0
+  current_point <- c(x + cos(angle) * r, y + sin(angle) * r)
+  for (i in 1:10) {
+    angle = i * (2*pi / 10)
+    next_point <- c(x + cos(angle) * r, y + sin(angle) * r)
+    lines(c(current_point[1], next_point[1]), c(current_point[2], next_point[2]))
+    current_point <- next_point
+  }
+}
 
 draw_straight_line <- function(segment_cnt, coordinate, current_pos, increase_on_first_feather_side, increase_on_feather_width, smaller_first, smaller_last, skip_feather = FALSE) {
   new_pos <- current_pos
@@ -122,7 +132,7 @@ draw_side_wall(case_width_in_feathers, base_height_in_feathers)
 close.pdf()
 
 open.pdf("design_PDFs/base_inner_back.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
-draw_inner_back_wall(case_width_in_feathers, base_height_in_feathers)
+draw_inner_back(case_width_in_feathers, base_height_in_feathers)
 close.pdf()
 
 open.pdf("design_PDFs/base_bottom.pdf", case_width_in_feathers*feather_width_mm, case_depth_in_feathers*feather_width_mm, 10)
@@ -143,4 +153,8 @@ close.pdf()
 
 open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm, case_depth_in_feathers*feather_width_mm, 10)
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers)
+close.pdf()
+
+open.pdf("design_PDFs/dial.pdf", 40, 40, 10)
+draw_dial(20, 20, 15)
 close.pdf()
