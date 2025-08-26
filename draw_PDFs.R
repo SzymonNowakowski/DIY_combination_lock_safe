@@ -289,8 +289,17 @@ draw_loop_lines_exact <- function(x0, y0,
 }
 
 
-# Draw rectangle by top-left corner, width w (→), height h (↓)
-draw_rect_tl <- function(x0, y0, w, h) {
+# Draw narrowingrectangle by top-left corner, width w, height h
+draw_narrowing_rectangle <- function(x0, y0, w, h) {
+  x1 <- x0 + w; y1 <- y0 - h
+  lines(c(x0, x1), c(y0, y0))  # top
+  lines(c(x1, x1 - w * 0.2), c(y0, y1))  # right
+  lines(c(x1 - w * 0.2, x0 + w * 0.2), c(y1, y1))  # bottom
+  lines(c(x0 + w * 0.2, x0), c(y1, y0))  # left
+}
+
+# Draw rectangle by top-left corner, width w, height h
+draw_rectangle <- function(x0, y0, w, h) {
   x1 <- x0 + w; y1 <- y0 - h
   lines(c(x0, x1), c(y0, y0))  # top
   lines(c(x1, x1), c(y0, y1))  # right
@@ -298,12 +307,17 @@ draw_rect_tl <- function(x0, y0, w, h) {
   lines(c(x0, x0), c(y1, y0))  # left
 }
 
+
+
 # Three adjacent sheets: 42x9, 42x18, 42x5 stacked top→down
 draw_three_sheets <- function(x0, y0) {
-  draw_rect_tl(x0, y0,     42,  9)   # 42×9
-  draw_rect_tl(x0, y0 - 9, 42, 18)   # 42×18 just below
-  draw_rect_tl(x0, y0 - 27,42,  5)   # 42×5  just below
+  draw_rectangle(x0, y0,     42,  9)   # 42×9
+  draw_rectangle(x0, y0 - 9, 42, 18)   # 42×18 just below
+  draw_rectangle(x0, y0 - 27,42,  5)   # 42×5  just below
 }
+
+draw_support <- function(x, y)
+  draw_narrowing_rectangle(x, y, dial_opening_depth, 40)
 
 open.pdf <- function(title, width_in_mm, height_in_mm, margin_in_mm) {
   pdf(file=title, width=(width_in_mm + 2 * margin_in_mm) / 25.4, height=(height_in_mm + 2 * margin_in_mm) / 25.4 )   #units: inches
@@ -367,7 +381,7 @@ open.pdf("design_PDFs/dial_control.pdf", r_mm*2+10, r_mm*2+10, 10)
 draw_dial(r_mm+5, r_mm+5, r_mm)
 close.pdf()
 
-open.pdf("design_PDFs/small_parts.pdf", 100, 100, 10)
+open.pdf("design_PDFs/small_parts.pdf", 100, 110, 10)
 for (i in 1:6)
   draw_loop_lines_exact(7+i*8,12)
 
@@ -377,5 +391,6 @@ for (i in 1:6)
 draw_three_sheets(3,53)
 
 draw_three_separators(3, 50)
+draw_support(0, 110)
 
 close.pdf()
