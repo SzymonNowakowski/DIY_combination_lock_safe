@@ -48,7 +48,7 @@ draw_dial <- function(x, y, r, pixel_vector) {
   if (length(pixel_vector) != pixel_cnt * 10)
     stop("Pixel vector must have 10 times pixel_cnt positions")
   
-  draw_harpoon(c(x + cos(2*pi/20) * r * 1/2, y + sin(2*pi/20) * r * 1/2), c(x + cos(2*pi/20) * r * 3/4, y + sin(2*pi/20) * r * 3/4))   # one-sided harpoon pointing at digit 1 to help with alignment of dials during construction
+  draw_harpoon(c(x + cos(2*pi/20) * r * 1/2, y + sin(2*pi/20) * r * 1/2), c(x + cos(2*pi/20) * r * 3/4, y + sin(2*pi/20) * r * 3/4))   # right-sided harpoon pointing at digit 1 to help with alignment of dials during construction
   
   angle <- 0
   current_point <- c(x + cos(angle) * r, y + sin(angle) * r)
