@@ -8,6 +8,8 @@ case_depth_in_feathers <- 16
 base_height_in_feathers <- 8
 lid_height_in_feathers <- 2
 
+source("digits.R")
+
 if (feather_width_mm <= plywood_thickness_mm)
   stop("Feather length must be greater than plywood thickness")
 
