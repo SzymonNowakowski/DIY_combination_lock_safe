@@ -5,6 +5,7 @@ pixel_cnt <- nrow(digits[["one"]])
 #all sizes in mm
 feather_width_mm <- 10
 plywood_thickness_mm <- 3
+arbitrary_thickness_mm <- 3
 
 # the below specs must be even multiplicities of feather length
 case_width_in_feathers <- 26
@@ -19,8 +20,10 @@ dial_pixel_protrudes_max_mm <- (a_mm / pixel_cnt) * .7
 dial_opening_depth <- 2 * sqrt((r_mm + dial_pixel_protrudes_max_mm)^2 - h_mm^2) + 1  #one additional mm just to be on a safe side
 dial_opening_width <- 46 # room for 3 sets of four dials (and one separator) 3 mm each (3*5*3) plus one additional mm just to be on a safe side 
 
+shaft_r_mm <- 2.1
+shaft_middle_below_lid <- (h_mm+3) - lid_height_in_feathers*feather_width_mm
 
-
+rod_r_mm <- 2.9/2
 
 if (feather_width_mm <= plywood_thickness_mm)
   stop("Feather length must be greater than plywood thickness")
@@ -55,12 +58,8 @@ draw_harpoon <- function(from, to, head_len=0.3, head_width=0.3) {
 
 # Draw an arc centered at (xc, yc), radius r,
 # from angle alpha to beta using only lines().
-draw_arc <- function(xc, yc, r, alpha, beta, clockwise=TRUE, n = 64) {
-  if (clockwise) {
-    if (beta > alpha) beta <- beta - 2*pi
-  } else {
-    if (beta < alpha) beta <- beta + 2*pi
-  }
+draw_arc <- function(xc, yc, r, alpha, beta, n = 64) {
+  
   th <- seq(alpha, beta, length.out = n)
   x <- xc + r * cos(th)
   y <- yc + r * sin(th)
@@ -73,23 +72,46 @@ draw_three_separators <- function(x, y) {
     lines(c(x, x + 3), c(y + 3*i, y + 3*i))
     r <- sqrt((dial_opening_depth/2)^2 + h_mm^2)
     angle <- asin(h_mm / r)
-    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r, pi - angle, angle)
+    angle_a <- asin(a_mm/10 / r)
+    
+    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r, pi-angle, pi/2+angle_a)
+    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r+a_mm/10 * 70/100, pi/2+angle_a, pi/2-angle_a)
+    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r, pi/2-angle_a, angle)
+    
+    #lines to connect arc segments
+    lines(c(x + 3 + dial_opening_depth/2 + r*cos(pi/2 + angle_a),
+            x + 3 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 + angle_a)),
+          c(y + 3*i - h_mm + r*sin(pi/2 + angle_a),
+            y + 3*i - h_mm + (r + a_mm/10*70/100)*sin(pi/2 + angle_a)))
+    
+    lines(c(x + 3 + dial_opening_depth/2 + r*cos(pi/2 - angle_a),
+            x + 3 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 - angle_a)),
+          c(y + 3*i - h_mm + r*sin(pi/2 - angle_a),
+            y + 3*i - h_mm + (r + a_mm/10*70/100)*sin(pi/2 - angle_a)))
+    
     lines(c(x + dial_opening_depth + 3, x + dial_opening_depth + 6), c(y + 3*i, y + 3* i))
   }
   lines(c(x, x), c(y + 3, y + 12))
   lines(c(x + dial_opening_depth + 6, x + dial_opening_depth + 6), c(y + 3, y + 12))
 }
 
-draw_dial <- function(x, y, r, pixel_vector=rep(F, pixel_cnt * 10)) {
+draw_dial <- function(x, y, r, inner_r, pixel_vector=rep(F, pixel_cnt * 10), control=FALSE) {
   if (length(pixel_vector) != pixel_cnt * 10)
     stop("Pixel vector must have 10 times pixel_cnt positions")
   
-  draw_harpoon(c(x + cos(2*pi/20) * r * 1/2, y + sin(2*pi/20) * r * 1/2), c(x + cos(2*pi/20) * r * 3/4, y + sin(2*pi/20) * r * 3/4))   # right-sided harpoon pointing at digit 1 to help with alignment of dials during construction
+  draw_arc(x, y, inner_r, 0, 2*pi, n=256)
+  
+  
+  if (control) {
+    draw_rectangle(x - 2.4, y - inner_r +0.3 -14, 4.8, 14)
+  } else
+    draw_harpoon(c(x + cos(2*pi/20) * r * 1/2, y + sin(2*pi/20) * r * 1/2), c(x + cos(2*pi/20) * r * 2/3, y + sin(2*pi/20) * r * 2/3))   # right-sided harpoon pointing at digit 1 to help with alignment of dials during construction
   
   angle <- 0
   current_point <- c(x + cos(angle) * r, y + sin(angle) * r)
   for (side in 1:10) {
     angle = side * (2*pi / 10)
+    draw_arc(x + cos(angle+2*pi/20) * r*4/5, y + sin(angle+2*pi/20) * r*4/5, rod_r_mm, 0, 2*pi, n=256)
     next_point <- c(x + cos(angle) * r, y + sin(angle) * r)
     #lines(c(current_point[1], next_point[1]), c(current_point[2], next_point[2]))
     #instead of plotting a single line, this line will be divided into 7 regions and the regions will be plotted separately
@@ -229,6 +251,47 @@ draw_side_wall <- function(width_segment_count, height_segment_count) {
   
 } 
 
+
+draw_alt_side_wall <- function(width_segment_count, height_segment_count, shift, protrude = TRUE) {
+  if (protrude) {
+    current_pos <- c(0, arbitrary_thickness_mm - (shaft_middle_below_lid - shaft_r_mm))
+    tmp_end <- c(width_segment_count * feather_width_mm - shift,  current_pos[2]) - c(sqrt((arbitrary_thickness_mm+shaft_r_mm)^2 - shaft_middle_below_lid^2), 0)
+  } else {
+    current_pos <- c(0, 0)
+    tmp_end <- c(shift,  current_pos[2]) - c(sqrt((arbitrary_thickness_mm+shaft_r_mm)^2 - shaft_middle_below_lid^2), 0)
+  }
+  
+  lines(c(current_pos[1], tmp_end[1]), c(current_pos[2], tmp_end[2]))
+  
+  if (protrude) {
+    draw_arc(width_segment_count * feather_width_mm - shift, arbitrary_thickness_mm+shaft_r_mm, shaft_r_mm + arbitrary_thickness_mm, pi+asin(shaft_middle_below_lid / (shaft_r_mm + arbitrary_thickness_mm)), 2*pi-asin(shaft_middle_below_lid / (shaft_r_mm + arbitrary_thickness_mm)))
+    tmp_start <- c(width_segment_count * feather_width_mm - shift,  current_pos[2]) + c(sqrt((arbitrary_thickness_mm+shaft_r_mm)^2 - shaft_middle_below_lid^2), 0)
+    current_pos <- c(width_segment_count * feather_width_mm - plywood_thickness_mm, arbitrary_thickness_mm - (shaft_middle_below_lid - shaft_r_mm))
+  } else {
+    draw_arc(shift, -shaft_middle_below_lid, shaft_r_mm + arbitrary_thickness_mm, pi-asin(shaft_middle_below_lid / (shaft_r_mm + arbitrary_thickness_mm)), asin(shaft_middle_below_lid / (shaft_r_mm + arbitrary_thickness_mm)))
+    tmp_start <- c(shift,  current_pos[2]) + c(sqrt((arbitrary_thickness_mm+shaft_r_mm)^2 - shaft_middle_below_lid^2), 0)
+    current_pos <- c(width_segment_count * feather_width_mm - plywood_thickness_mm, 0)
+  }
+  
+  
+  lines(c(tmp_start[1], current_pos[1]), c(tmp_start[2], current_pos[2]))
+  
+  #and a final go up or down as if it were a one large feather
+  coordinate <- 1
+  direction <- 1
+  increase_on_first_feather_side <- TRUE
+  new_pos <- current_pos
+  new_pos[3-coordinate] <- current_pos[3-coordinate] + (-1)^(increase_on_first_feather_side + direction) * plywood_thickness_mm
+  lines(c(current_pos[1], new_pos[1]), c(current_pos[2], new_pos[2]))
+  current_pos <- new_pos
+  
+  current_pos <- draw_feathered_line(height_segment_count,2, current_pos, increase_on_first_feather_side=TRUE, increase_on_feather_width=TRUE, smaller_first=TRUE, smaller_last=FALSE)
+  current_pos <- draw_feathered_line(width_segment_count, 1, current_pos, increase_on_first_feather_side=FALSE, increase_on_feather_width=FALSE, smaller_first=FALSE, smaller_last=TRUE)
+  current_pos <- draw_feathered_line(height_segment_count,2, current_pos, increase_on_first_feather_side=FALSE, increase_on_feather_width=FALSE, smaller_first=TRUE, smaller_last=FALSE)
+  
+  
+} 
+
 draw_inner_back<- function(width_segment_count, height_segment_count) {
   current_pos <- c(plywood_thickness_mm,0)
   current_pos <- draw_straight_line(width_segment_count, 1, current_pos, increase_on_feather_width=TRUE, smaller_first=TRUE, smaller_last=TRUE, skip_feather=TRUE)
@@ -289,35 +352,44 @@ draw_loop_lines_exact <- function(x0, y0,
 }
 
 
-# Draw narrowingrectangle by top-left corner, width w, height h
+# Draw narrowingrectangle by low-left corner, width w, height h
 draw_narrowing_rectangle <- function(x0, y0, w, h) {
-  x1 <- x0 + w; y1 <- y0 - h
-  lines(c(x0, x1), c(y0, y0))  # top
-  lines(c(x1, x1 - w * 0.2), c(y0, y1))  # right
-  lines(c(x1 - w * 0.2, x0 + w * 0.2), c(y1, y1))  # bottom
-  lines(c(x0 + w * 0.2, x0), c(y1, y0))  # left
+  x1 <- x0 + w; y1 <- y0 + h
+  lines(c(x0, x1), c(y0, y0))  
+  lines(c(x1, x1 - w * 0.2), c(y0, y1))  
+  lines(c(x1 - w * 0.2, x0 + w * 0.2), c(y1, y1)) 
+  lines(c(x0 + w * 0.2, x0), c(y1, y0)) 
 }
 
-# Draw rectangle by top-left corner, width w, height h
+# Draw rectangle by low-left corner, width w, height h
 draw_rectangle <- function(x0, y0, w, h) {
-  x1 <- x0 + w; y1 <- y0 - h
-  lines(c(x0, x1), c(y0, y0))  # top
-  lines(c(x1, x1), c(y0, y1))  # right
-  lines(c(x1, x0), c(y1, y1))  # bottom
-  lines(c(x0, x0), c(y1, y0))  # left
+  x1 <- x0 + w; y1 <- y0 + h
+  lines(c(x0, x1), c(y0, y0))  
+  lines(c(x1, x1), c(y0, y1))  
+  lines(c(x1, x0), c(y1, y1))  
+  lines(c(x0, x0), c(y1, y0))  
 }
 
 
 
-# Three adjacent sheets: 42x9, 42x18, 42x5 stacked top→down
+# Three adjacent sheets: 42x9, 42x18, 42x5 stacked one on another
 draw_three_sheets <- function(x0, y0) {
   draw_rectangle(x0, y0,     42,  9)   # 42×9
-  draw_rectangle(x0, y0 - 9, 42, 18)   # 42×18 just below
-  draw_rectangle(x0, y0 - 27,42,  5)   # 42×5  just below
+  draw_rectangle(x0, y0 + 9, 42, 18)   # 42×18 just below
+  draw_rectangle(x0, y0 + 27,42,  5)   # 42×5  just below
 }
 
-draw_support <- function(x, y)
-  draw_narrowing_rectangle(x, y, dial_opening_depth, 40)
+draw_support <- function(x, y) {
+  draw_narrowing_rectangle(x, y, dial_opening_depth, 1.5 * h_mm)
+  draw_arc(x+dial_opening_depth/2, y+h_mm, shaft_r_mm, 0, 2*pi, n=256)
+}
+
+
+draw_two_circles <- function(x,y) {
+  draw_arc(x, y, shaft_r_mm, 0, 2*pi, n=256)
+  draw_arc(x, y, shaft_r_mm + arbitrary_thickness_mm, 0, 2*pi, n=256)
+}
+
 
 open.pdf <- function(title, width_in_mm, height_in_mm, margin_in_mm) {
   pdf(file=title, width=(width_in_mm + 2 * margin_in_mm) / 25.4, height=(height_in_mm + 2 * margin_in_mm) / 25.4 )   #units: inches
@@ -333,8 +405,12 @@ close.pdf <- function() {
 
 
 
-open.pdf("design_PDFs/base_both_sides.pdf", case_depth_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 5)
+open.pdf("design_PDFs/base_side_A.pdf", case_depth_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 5)
 draw_side_wall(case_depth_in_feathers, base_height_in_feathers)
+close.pdf()
+
+open.pdf("design_PDFs/base_side_B.pdf", case_depth_in_feathers*feather_width_mm+20, base_height_in_feathers*feather_width_mm+20, 5)
+draw_alt_side_wall(case_depth_in_feathers, base_height_in_feathers, 21+dial_opening_depth/2)
 close.pdf()
 
 open.pdf("design_PDFs/base_front_or_back.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
@@ -349,8 +425,12 @@ open.pdf("design_PDFs/base_bottom.pdf", case_width_in_feathers*feather_width_mm,
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/lid_both_sides.pdf", case_depth_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_side_A.pdf", case_depth_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
 draw_side_wall(case_depth_in_feathers, lid_height_in_feathers)
+close.pdf()
+
+open.pdf("design_PDFs/lid_side_B.pdf", case_depth_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+draw_alt_side_wall(case_depth_in_feathers, lid_height_in_feathers, 21+dial_opening_depth/2, protrude = FALSE)
 close.pdf()
 
 open.pdf("design_PDFs/lid_front_or_back.pdf", case_width_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
@@ -365,32 +445,39 @@ open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm, cas
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers, dial_opening_width, dial_opening_depth, opening_shift_mm=c(30, 21))
 close.pdf()
 
-open.pdf("design_PDFs/dial1.pdf", r_mm*2+10, r_mm*2+10, 10)
-draw_dial(r_mm+5, r_mm+5, r_mm, pixel_vector = unlist(lapply(digits, function(m) m[,1])))
+inner_r<-c(rep(shaft_r_mm, 2), shaft_r_mm + 14)
+
+for (i in 1:3) {
+  open.pdf(paste0("design_PDFs/dial", i, ".pdf"), r_mm*6+16, r_mm*2+5, 10)
+  draw_dial(r_mm+5, r_mm+5, r_mm, inner_r[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
+  draw_dial(3*r_mm+10, r_mm+5, r_mm, inner_r[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
+  draw_dial(5*r_mm+15, r_mm+5, r_mm, inner_r[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
+  close.pdf()
+}
+
+open.pdf("design_PDFs/dial_control.pdf", r_mm*6+16, r_mm*2+5, 10)
+draw_dial(r_mm+5, r_mm+5, r_mm, shaft_r_mm, control=TRUE)
+draw_dial(3*r_mm+10, r_mm+5, r_mm, shaft_r_mm, control=TRUE)
+draw_dial(5*r_mm+15, r_mm+5, r_mm, shaft_r_mm, control=TRUE)
 close.pdf()
 
-open.pdf("design_PDFs/dial2.pdf", r_mm*2+10, r_mm*2+10, 10)
-draw_dial(r_mm+5, r_mm+5, r_mm, pixel_vector = unlist(lapply(digits, function(m) m[,2])))
-close.pdf()
-
-open.pdf("design_PDFs/dial3.pdf", r_mm*2+10, r_mm*2+10, 10)
-draw_dial(r_mm+5, r_mm+5, r_mm, pixel_vector = unlist(lapply(digits, function(m) m[,3])))
-close.pdf()
-
-open.pdf("design_PDFs/dial_control.pdf", r_mm*2+10, r_mm*2+10, 10)
-draw_dial(r_mm+5, r_mm+5, r_mm)
-close.pdf()
-
-open.pdf("design_PDFs/small_parts.pdf", 100, 110, 10)
+open.pdf("design_PDFs/small_parts.pdf", 120, 140, 10)
 for (i in 1:6)
   draw_loop_lines_exact(7+i*8,12)
 
 for (i in 1:6)
   draw_L(i*7,21)
 
-draw_three_sheets(3,53)
+draw_three_sheets(3,21)
 
 draw_three_separators(3, 50)
-draw_support(0, 110)
+draw_support(0, 72)
+draw_support(dial_opening_depth, 70)
+draw_support(dial_opening_depth*2, 70)
+draw_support(dial_opening_depth*2, 70-1.5*h_mm)
+draw_support(dial_opening_depth*2, 70-3*h_mm)
+draw_support(dial_opening_depth*2, 70+1.5*h_mm)
+
+draw_two_circles(52,40)
 
 close.pdf()
