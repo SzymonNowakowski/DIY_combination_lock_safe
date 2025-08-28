@@ -553,7 +553,7 @@ inner_r<-c(rep(shaft_r_mm, 2), shaft_r_mm + 14)
 draw_small_rod_sockets<-c(F, T, T)
 
 for (i in 1:3) {
-  open.pdf(paste0("design_PDFs/dial", i, ".pdf"), r_mm*6+16, r_mm*2+5, 10)
+  open.pdf(paste0("design_PDFs/dial", i, ".pdf"), r_mm*6+16, r_mm*2+7, 10)
   draw_dial(r_mm+5, r_mm+5, r_mm, inner_r[i], draw_small_rod_sockets[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
   draw_dial(3*r_mm+10, r_mm+5, r_mm, inner_r[i], draw_small_rod_sockets[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
   draw_dial(5*r_mm+15, r_mm+5, r_mm, inner_r[i], draw_small_rod_sockets[i], pixel_vector = unlist(lapply(digits, function(m) m[,i])))
