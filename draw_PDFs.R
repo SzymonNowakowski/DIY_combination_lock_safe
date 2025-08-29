@@ -26,6 +26,8 @@ shaft_r_mm <- 2.1
 shaft_middle_below_lid <- (h_mm+3) - lid_height_in_feathers*feather_width_mm
 
 rod_r_mm <- 2.9/2
+rod_big_r_mm <- 2.4
+rod_length_mm <- 14
 
 if (feather_width_mm <= plywood_thickness_mm)
   stop("Feather length must be greater than plywood thickness")
@@ -101,13 +103,15 @@ draw_dial <- function(x, y, r, inner_r, draw_small_rod_sockets, pixel_vector=rep
   if (length(pixel_vector) != pixel_cnt * 10)
     stop("Pixel vector must have 10 times pixel_cnt positions")
   
-  draw_arc(x, y, inner_r, 0, 2*pi, n=256)
-  
-  
   if (control) {
-    draw_rectangle(x - 2.4, y - inner_r +0.3 -14, 4.8, 14)
-  } else
+    draw_arc(x, y, inner_r, 0, pi, n=256)
+    lines(c(x - inner_r, x-rod_big_r_mm), c(y, y-inner_r-rod_length_mm))
+    lines(c(x-rod_big_r_mm, x+rod_big_r_mm), c(y-inner_r-rod_length_mm, y-inner_r-rod_length_mm))
+    lines(c(x + inner_r, x+rod_big_r_mm), c(y, y-inner_r-rod_length_mm))
+  } else {
+    draw_arc(x, y, inner_r, 0, 2*pi, n=256)
     draw_harpoon(c(x + cos(2*pi/20) * r * 1/2, y + sin(2*pi/20) * r * 1/2), c(x + cos(2*pi/20) * r * 2/3, y + sin(2*pi/20) * r * 2/3))   # right-sided harpoon pointing at digit 1 to help with alignment of dials during construction
+  }
   
   angle <- 0
   current_point <- c(x + cos(angle) * r, y + sin(angle) * r)
@@ -495,7 +499,7 @@ close.pdf <- function() {
 
 
 
-open.pdf("design_PDFs/base_side_A.pdf", case_depth_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 5)
+open.pdf("design_PDFs/base_side_A.pdf", case_depth_in_feathers*feather_width_mm+10, base_height_in_feathers*feather_width_mm+10, 5)
 draw_side_wall(case_depth_in_feathers, base_height_in_feathers)
 close.pdf()
 
@@ -503,49 +507,46 @@ open.pdf("design_PDFs/base_side_B.pdf", case_depth_in_feathers*feather_width_mm+
 draw_alt_side_wall(case_depth_in_feathers, base_height_in_feathers, 21+dial_opening_depth/2)
 close.pdf()
 
-open.pdf("design_PDFs/base_front_or_back.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
+
+open.pdf("design_PDFs/base_back.pdf", case_width_in_feathers*feather_width_mm+10, base_height_in_feathers*feather_width_mm+10, 10)
 draw_side_wall(case_width_in_feathers, base_height_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/base_back.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
-draw_side_wall(case_width_in_feathers, base_height_in_feathers)
-close.pdf()
-
-open.pdf("design_PDFs/base_front.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/base_front.pdf", case_width_in_feathers*feather_width_mm+10, base_height_in_feathers*feather_width_mm+10, 10)
 draw_alt2_side_wall(case_width_in_feathers, base_height_in_feathers, 21, protrude=FALSE)
 close.pdf()
 
 
-open.pdf("design_PDFs/base_inner_back.pdf", case_width_in_feathers*feather_width_mm, base_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/base_inner_back.pdf", case_width_in_feathers*feather_width_mm+10, base_height_in_feathers*feather_width_mm+10, 10)
 draw_inner_back(case_width_in_feathers, base_height_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/base_bottom.pdf", case_width_in_feathers*feather_width_mm, case_depth_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/base_bottom.pdf", case_width_in_feathers*feather_width_mm+10, case_depth_in_feathers*feather_width_mm+10, 10)
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/lid_side_A.pdf", case_depth_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_side_A.pdf", case_depth_in_feathers*feather_width_mm+10, lid_height_in_feathers*feather_width_mm+10, 10)
 draw_side_wall(case_depth_in_feathers, lid_height_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/lid_side_B.pdf", case_depth_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_side_B.pdf", case_depth_in_feathers*feather_width_mm+10, lid_height_in_feathers*feather_width_mm+10, 10)
 draw_alt_side_wall(case_depth_in_feathers, lid_height_in_feathers, 21+dial_opening_depth/2, protrude = FALSE)
 close.pdf()
 
-open.pdf("design_PDFs/lid_back.pdf", case_width_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_back.pdf", case_width_in_feathers*feather_width_mm+10, lid_height_in_feathers*feather_width_mm+10, 10)
 draw_side_wall(case_width_in_feathers, lid_height_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/lid_front.pdf", case_width_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm+20, 10)
+open.pdf("design_PDFs/lid_front.pdf", case_width_in_feathers*feather_width_mm+10, lid_height_in_feathers*feather_width_mm+20, 10)
 draw_alt2_side_wall(case_width_in_feathers, lid_height_in_feathers, 21)
 close.pdf()
 
 
-open.pdf("design_PDFs/lid_inner_back.pdf", case_width_in_feathers*feather_width_mm, lid_height_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_inner_back.pdf", case_width_in_feathers*feather_width_mm+10, lid_height_in_feathers*feather_width_mm+10, 10)
 draw_inner_back(case_width_in_feathers, lid_height_in_feathers)
 close.pdf()
 
-open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm, case_depth_in_feathers*feather_width_mm, 10)
+open.pdf("design_PDFs/lid_top.pdf", case_width_in_feathers*feather_width_mm+10, case_depth_in_feathers*feather_width_mm+10, 10)
 draw_top_or_bottom(case_width_in_feathers, case_depth_in_feathers, dial_opening_width, dial_opening_depth, opening_shift_mm=c(30, 21))
 close.pdf()
 
