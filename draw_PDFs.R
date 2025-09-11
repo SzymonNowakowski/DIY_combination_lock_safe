@@ -386,6 +386,25 @@ draw_alt2_side_wall <- function(width_segment_count, height_segment_count, shift
   
 } 
 
+# Draw narrowing rectangle by low-left corner, width w, height h
+draw_narrowing_rectangle <- function(x0, y0, w, h) {
+  x1 <- x0 + w; y1 <- y0 + h
+  lines(c(x0, x1), c(y0, y0))  
+  lines(c(x1, x1 - w * 0.2), c(y0, y1))  
+  lines(c(x1 - w * 0.2, x0 + w * 0.2), c(y1, y1)) 
+  lines(c(x0 + w * 0.2, x0), c(y1, y0)) 
+}
+
+# Draw rectangle by low-left corner, width w, height h
+draw_rectangle <- function(x0, y0, w, h) {
+  x1 <- x0 + w; y1 <- y0 + h
+  lines(c(x0, x1), c(y0, y0))  
+  lines(c(x1, x1), c(y0, y1))  
+  lines(c(x1, x0), c(y1, y1))  
+  lines(c(x0, x0), c(y1, y0))  
+}
+
+
 draw_outer_back<- function(width_segment_count, height_segment_count) {
   draw_rectangle(2, 2, width_segment_count*feather_width_mm, height_segment_count*feather_width_mm)
 }
@@ -441,23 +460,6 @@ draw_small_support <- function(x0, y0,
 }
 
 
-# Draw narrowingrectangle by low-left corner, width w, height h
-draw_narrowing_rectangle <- function(x0, y0, w, h) {
-  x1 <- x0 + w; y1 <- y0 + h
-  lines(c(x0, x1), c(y0, y0))  
-  lines(c(x1, x1 - w * 0.2), c(y0, y1))  
-  lines(c(x1 - w * 0.2, x0 + w * 0.2), c(y1, y1)) 
-  lines(c(x0 + w * 0.2, x0), c(y1, y0)) 
-}
-
-# Draw rectangle by low-left corner, width w, height h
-draw_rectangle <- function(x0, y0, w, h) {
-  x1 <- x0 + w; y1 <- y0 + h
-  lines(c(x0, x1), c(y0, y0))  
-  lines(c(x1, x1), c(y0, y1))  
-  lines(c(x1, x0), c(y1, y1))  
-  lines(c(x0, x0), c(y1, y0))  
-}
 
 
 
