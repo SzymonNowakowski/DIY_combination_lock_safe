@@ -57,10 +57,12 @@ alt="Pixelated digits used for dials">
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_highlighted.jpg" width="350" alt="Digit marks were highlighted using the black permanet marker, while the background was highlighted with white permanent marker">
 
 **Step 3 – Parts aligned**  
+
 **Note** - Align the *harpoon symbols* (partially laser-cut on the third dial) to position the dials correctly.
+
 **Note** - Use the shaft (diameter 4.2 mm) and rods (diameter 2.9 mm) to hold the three dial parts in place while gluing.
 
-<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_parts.jpg" width="350" alt="Dial parts are aligned using metal rods (diameter 2.9 mm) and a shaft (diameter 4.2 mm)">
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_aligned.jpg" width="350" alt="Dial parts are aligned using metal rods (diameter 2.9 mm) and a shaft (diameter 4.2 mm)">
 
 **Step 4 – Gluing**  
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_glued.jpg" width="350" alt="Dial parts glued with wood glue and pressed together">
