@@ -38,11 +38,32 @@ A DIY three-dial combination-lock project for laser-cutting from plywood.
 
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/hinges/hinges_glued.jpg" width="350" alt="Hinges glued with industrial-grade ATK FIX 54 (gel) adhesive; gaps filled and reinforced with plastic filler powder combined with ATK FIX 06 (liquid)">
 
+
 ## Dails
 
 ### Digits
 
 The design features digits rendered in a 3 by 7 pixel grid.
+
+### Dials Assembly
+
+**Step 1 – Parts overview**  
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_parts.jpg" width="350" alt="Dial parts overview">
+
+**Step 2 – Digitis highlighted**  
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_highlighted.jpg" width="350" alt="Digit marks were highlighted using the black permanet marker, while the background was highlighted with white permanent marker">
+
+**Step 3 – Parts aligned**  
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_parts.jpg" width="350" alt="Dial parts are aligned using metal rods (diameter 2.9 mm) and a shaft (diameter 4.2 mm)">
+
+**Step 4 – Gluing**  
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_glued.jpg" width="350" alt="Dial parts glued with wood glue and pressed together">
+
+**Step 5 – Assembled lid**  
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_completed.jpg" width="350" alt="Dial completely assembled">
+
+
+
 
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/digits.png" 
 alt="pixelated digits">
