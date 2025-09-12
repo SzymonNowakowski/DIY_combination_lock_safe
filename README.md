@@ -1,4 +1,4 @@
-# DIY combination lock safe
+# DIY Combination Lock Safe
 
 A DIY three-dial combination-lock project for laser-cutting from plywood.
 
@@ -34,11 +34,9 @@ A DIY three-dial combination-lock project for laser-cutting from plywood.
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/lid/lid_sanded.jpg" height="250" alt="Lid sanded with sandpaper">
 
 
-## Hinges
+## Hinges – Gluing and Reinforcement
 
-**Step – Gluing and reinforcement**  
-<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/hinges/hinges_glued.jpg" height="250" alt="Hinges glued with industrial-grade ATK FIX 54 (gel) adhesive; gaps reinforced with plastic filler powder combined with ATK FIX 06 (liquid)">
-
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/hinges/hinges_glued.jpg" height="250" alt="Hinges glued with industrial-grade ATK FIX 54 (gel) adhesive; gaps filled and reinforced with plastic filler powder combined with ATK FIX 06 (liquid)">
 
 ## Dails
 
