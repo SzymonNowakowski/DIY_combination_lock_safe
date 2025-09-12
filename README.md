@@ -45,6 +45,9 @@ A DIY three-dial combination-lock project for laser-cutting from plywood.
 
 The design features digits rendered in a 3 by 7 pixel grid.
 
+<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/digits.png" 
+alt="Pixelated digits used for dials">
+
 ### Dials Assembly
 
 **Step 1 – Parts overview**  
@@ -64,6 +67,3 @@ The design features digits rendered in a 3 by 7 pixel grid.
 
 
 
-
-<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/digits.png" 
-alt="pixelated digits">
