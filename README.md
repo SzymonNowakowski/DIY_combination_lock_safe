@@ -4,21 +4,6 @@ A DIY three-dial combination-lock project for laser-cutting from plywood.
 
 # Assembly Instructions
 
-## Base vs Lid
-
-| **Base** | **Lid** |
-|----------|---------|
-| **Step 1 – Parts aligned**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/base/base_parts.jpg" width="300" alt="Base and its parts aligned flat"> | **Step 1 – Parts aligned**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/lid/lid_parts.jpg" width="300" alt="Lid and its parts aligned flat"> |
-| **Step 2 – Gluing**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/base/base_glued.jpg" width="300" alt="Base glued with wood glue"> | **Step 2 – Gluing**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/lid/lid_glued.jpg" width="300" alt="Lid glued with wood glue"> |
-| **Step 3 – Assembled**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/base/base_completed.jpg" width="300" alt="Base assembled"> | **Step 3 – Assembled**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/lid/lid_completed.jpg" width="300" alt="Lid assembled"> |
-| **Step 4 – Sanding**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/base/base_sanded.jpg" width="300" alt="Base sanded with sandpaper"> | **Step 4 – Sanding**<br><img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/lid/lid_sanded.jpg" width="300" alt="Lid sanded with sandpaper"> |
-
-## Hinges – Gluing and Reinforcement
-
-<img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/hinges/hinges_glued.jpg" width="350" alt="Hinges glued with industrial-grade ATK FIX 54 (gel) adhesive; gaps filled and reinforced with plastic filler powder combined with ATK FIX 06 (liquid)">
-
-# Assembly Instructions
-
 ## Base
 
 **Step 1 – Parts aligned**  
