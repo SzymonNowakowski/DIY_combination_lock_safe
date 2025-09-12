@@ -60,11 +60,12 @@ alt="Pixelated digits used for dials">
 
 **Note** - Align the *harpoon symbols* (partially laser-cut on the third dial) to position the dials correctly.
 
-**Note** - Use the shaft (diameter 4.2 mm) and rods (diameter 2.9 mm) to hold the three dial parts in place while gluing.
-
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_aligned.jpg" width="350" alt="Dial parts are aligned using metal rods (diameter 2.9 mm) and a shaft (diameter 4.2 mm)">
 
 **Step 4 – Gluing**  
+
+**Note** - Use the shaft (diameter 4.2 mm) and rods (diameter 2.9 mm) to hold the three dial parts in place while gluing.
+
 <img src="https://raw.githubusercontent.com/SzymonNowakowski/DIY_combination_lock_safe/master/photos/assembly/dials/dial_glued.jpg" width="350" alt="Dial parts glued with wood glue and pressed together">
 
 **Step 5 – Assembled dial**  
