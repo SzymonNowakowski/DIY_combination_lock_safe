@@ -107,13 +107,13 @@ draw_three_separators <- function(x, y) {
     }
     
     #far right, horizontal
-    lines(c(x + 70 + dial_opening_depth, x + 70 + dial_opening_depth + 10), c(y + plywood_thickness_mm * (i-1), y + plywood_thickness_mm * (i-1)))
+    lines(c(x + 70 + dial_opening_depth, x + 70 + dial_opening_depth + 13), c(y + plywood_thickness_mm * (i-1), y + plywood_thickness_mm * (i-1)))
   }
   
   #vertical leftmost
   lines(c(x, x), c(y, y + plywood_thickness_mm * 5))
   #vertical rightmost
-  lines(c(x + dial_opening_depth + 80, x + dial_opening_depth + 80), c(y, y + plywood_thickness_mm * 5))
+  lines(c(x + dial_opening_depth + 83, x + dial_opening_depth + 83), c(y, y + plywood_thickness_mm * 5))
 }
 
 draw_dial <- function(x, y, r, inner_r, draw_small_rod_sockets, pixel_vector=rep(F, pixel_cnt * 10), control=FALSE) {
@@ -426,7 +426,7 @@ draw_outer_back<- function(width_segment_count, height_segment_count) {
   draw_rectangle(2, 2, width_segment_count*feather_width_mm, height_segment_count*feather_width_mm)
 }
 
-draw_connector <- function(x, y, length=10) {
+draw_connector <- function(x, y, length=7) {
   lines(c(x, x), c(y, y+length))
 }
 
@@ -442,7 +442,7 @@ draw_comb <- function(x, y) {
   source <- dest
   
   dest <- x+4+ thin
-  lines(c(source, dest), c(y+10, y+10))
+  lines(c(source, dest), c(y+7, y+7))
   draw_connector(dest, y)
   source <- dest
   
@@ -452,7 +452,7 @@ draw_comb <- function(x, y) {
   source <- dest
   
   dest <- x+4+ 2*thin + thickA
-  lines(c(source, dest), c(y+10, y+10))
+  lines(c(source, dest), c(y+7, y+7))
   draw_connector(dest, y)
   source <- dest
   
@@ -462,16 +462,16 @@ draw_comb <- function(x, y) {
   source <- dest
   
   dest <- x+4+ 3*thin + 2*thickA
-  lines(c(source, dest), c(y+10, y+10))
+  lines(c(source, dest), c(y+7, y+7))
   draw_connector(dest, y)
   source <- dest
   
   dest <- x+4+ 3*thin + 2*thickA + thickB
   lines(c(source, dest), c(y, y))
-  draw_connector(dest, y, 16)
+  draw_connector(dest, y, 10)
   
-  lines(c(dest, x), c(y+16, y+16))
-  draw_connector(x, y, 16)
+  lines(c(dest, x), c(y+10, y+10))
+  draw_connector(x, y, 10)
 }
 
 draw_shaft_support <- function(x, y) {
@@ -488,8 +488,8 @@ draw_two_circles <- function(x,y) {
 
 draw_two_rectangles <- function(x, y) {
   height <- 4 + 2*plywood_thickness_mm
-  draw_rectangle(x, y, 16, height)
-  draw_rectangle(x+3, y+plywood_thickness_mm, 10, plywood_thickness_mm)
+  draw_rectangle(x, y, 3+7+3, height)
+  draw_rectangle(x+3, y+plywood_thickness_mm, 7, plywood_thickness_mm)
   return(height)
 }
 
@@ -592,16 +592,21 @@ close.pdf()
 
 open.pdf("design_PDFs/small_parts_B.pdf", 140, 90, 10)
 
-draw_three_separators(16, 52)
-draw_rectangle(16, 0, 90, 10)
-draw_rectangle(16, 10, 90, 10)
+
 
 height <- draw_two_rectangles(0,0)
 for (i in 1:3)
   draw_two_rectangles(0, i*height)
 
-draw_comb(16, 20)
-draw_comb(16, 36)
+
+draw_rectangle(13, 0, 90, 7)
+draw_rectangle(13, 7, 90, 7)
+
+draw_comb(13, 14)
+draw_comb(13, 24)
+draw_three_separators(13, 34)
 
 close.pdf()
+
+
 
