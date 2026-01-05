@@ -18,7 +18,9 @@ r_mm <- sqrt(h_mm^2 / (1 - 4 * sin(2*pi/20)^2))
 a_mm <- sqrt(r_mm^2 - h_mm^2)
 dial_pixel_protrudes_max_mm <- (a_mm / pixel_cnt) * .7  
 dial_opening_depth <- 2 * sqrt((r_mm + dial_pixel_protrudes_max_mm)^2 - h_mm^2) + 1  #one additional mm just to be on a safe side
-dial_opening_width <- 46 # room for 3 sets of four dials (and one separator) 3 mm each (3*5*3) plus one additional mm just to be on a safe side 
+dial_opening_width <- plywood_thickness_mm*5*3+1 # room for 3 sets of four dials (and one separator) 3(or 4) mm each  
+                      # 46 for 3 mm thickness = 3*5*3 plus one additional mm just to be on a safe side
+                      # 61 for 4 mm thickness = 4*5*3 + 1
 
 movement_shaft_mm <- 4
 
@@ -72,31 +74,46 @@ draw_arc <- function(xc, yc, r, alpha, beta, n = 64) {
 }
 
 draw_three_separators <- function(x, y) {
-  for (i in 1:4) {
-    lines(c(x, x + 3), c(y + 3*i, y + 3*i))
+  for (i in 1:6) {
+    #far left, horizontal, 70mm
+    lines(c(x, x + 70), c(y + plywood_thickness_mm * (i-1), y + plywood_thickness_mm * (i-1)))
     r <- sqrt((dial_opening_depth/2)^2 + h_mm^2)
     angle <- asin(h_mm / r)
     angle_a <- asin(a_mm/10 / r)
     
-    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r, pi-angle, pi/2+angle_a)
-    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r+a_mm/10 * 70/100, pi/2+angle_a, pi/2-angle_a)
-    draw_arc(x + 3 + dial_opening_depth/2, y + 3*i - h_mm, r, pi/2-angle_a, angle)
+    draw_arc(x + 70 + dial_opening_depth/2, y + plywood_thickness_mm * (i-1) - h_mm, r, pi-angle, pi/2+angle_a)
+    if (i %% 2 == 1) {  #start with nonbroken arc (and every second arc too)
+      draw_arc(x + 70 + dial_opening_depth/2, y + plywood_thickness_mm * (i-1) - h_mm, r, pi/2+angle_a, pi/2-angle_a)
+    } else {
+      draw_arc(x + 70 + dial_opening_depth/2, y + plywood_thickness_mm * (i-1) - h_mm, r+a_mm/10 * 70/100, pi/2+angle_a, pi/2-angle_a)
+    }
+    draw_arc(x + 70 + dial_opening_depth/2, y + plywood_thickness_mm * (i-1) - h_mm, r, pi/2-angle_a, angle)
     
-    #lines to connect arc segments
-    lines(c(x + 3 + dial_opening_depth/2 + r*cos(pi/2 + angle_a),
-            x + 3 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 + angle_a)),
-          c(y + 3*i - h_mm + r*sin(pi/2 + angle_a),
-            y + 3*i - h_mm + (r + a_mm/10*70/100)*sin(pi/2 + angle_a)))
+    if (i %% 2 == 0) {  # for broken arcs
     
-    lines(c(x + 3 + dial_opening_depth/2 + r*cos(pi/2 - angle_a),
-            x + 3 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 - angle_a)),
-          c(y + 3*i - h_mm + r*sin(pi/2 - angle_a),
-            y + 3*i - h_mm + (r + a_mm/10*70/100)*sin(pi/2 - angle_a)))
+      #lines to connect arc segments
     
-    lines(c(x + dial_opening_depth + 3, x + dial_opening_depth + 6), c(y + 3*i, y + 3* i))
+      #up
+      lines(c(x + 70 + dial_opening_depth/2 + r*cos(pi/2 + angle_a),
+           x + 70 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 + angle_a)),
+          c(y + plywood_thickness_mm * (i-1) - h_mm + r*sin(pi/2 + angle_a),
+            y + plywood_thickness_mm * (i-1) - h_mm + (r + a_mm/10*70/100)*sin(pi/2 + angle_a)))
+    
+      #down
+      lines(c(x + 70 + dial_opening_depth/2 + r*cos(pi/2 - angle_a),
+            x + 70 + dial_opening_depth/2 + (r + a_mm/10*70/100)*cos(pi/2 - angle_a)),
+          c(y + plywood_thickness_mm * (i-1) - h_mm + r*sin(pi/2 - angle_a),
+            y + plywood_thickness_mm * (i-1) - h_mm + (r + a_mm/10*70/100)*sin(pi/2 - angle_a)))
+    }
+    
+    #far right, horizontal
+    lines(c(x + 70 + dial_opening_depth, x + 70 + dial_opening_depth + 10), c(y + plywood_thickness_mm * (i-1), y + plywood_thickness_mm * (i-1)))
   }
-  lines(c(x, x), c(y + 3, y + 12))
-  lines(c(x + dial_opening_depth + 6, x + dial_opening_depth + 6), c(y + 3, y + 12))
+  
+  #vertical leftmost
+  lines(c(x, x), c(y, y + plywood_thickness_mm * 5))
+  #vertical rightmost
+  lines(c(x + dial_opening_depth + 80, x + dial_opening_depth + 80), c(y, y + plywood_thickness_mm * 5))
 }
 
 draw_dial <- function(x, y, r, inner_r, draw_small_rod_sockets, pixel_vector=rep(F, pixel_cnt * 10), control=FALSE) {
@@ -409,65 +426,52 @@ draw_outer_back<- function(width_segment_count, height_segment_count) {
   draw_rectangle(2, 2, width_segment_count*feather_width_mm, height_segment_count*feather_width_mm)
 }
 
-draw_L <- function(x0, y0, L = c(3, 6, 4, 3, 7, 9)) {
-  stopifnot(length(L) == 6)
-  # points around the outline
-  p1 <- c(x0, y0)
-  p2 <- p1 + c(L[1],    0)   # right
-  p3 <- p2 + c(   0, -L[2])  # down
-  p4 <- p3 + c(L[3],    0)  # left
-  p5 <- p4 + c(   0, -L[4])  # down
-  p6 <- p5 + c(-L[5],    0)   # right
-  p7 <- p6 + c(   0,  L[6])  # up
-  # draw edges
-  lines(c(p1[1], p2[1]), c(p1[2], p2[2]))
-  lines(c(p2[1], p3[1]), c(p2[2], p3[2]))
-  lines(c(p3[1], p4[1]), c(p3[2], p4[2]))
-  lines(c(p4[1], p5[1]), c(p4[2], p5[2]))
-  lines(c(p5[1], p6[1]), c(p5[2], p6[2]))
-  lines(c(p6[1], p7[1]), c(p6[2], p7[2]))
-  # close the loop (final left segment)
-  lines(c(p7[1], p1[1]), c(p7[2], p1[2]))
-  
+draw_connector <- function(x, y, length=10) {
+  lines(c(x, x), c(y, y+length))
 }
 
-draw_small_support <- function(x0, y0,
-                                  len_left = 6, down1 = 3, diag45 = 3*sqrt(2), down2 = 6) {
-  # Start
-  S <- c(x0, y0)
-  # 8 mm left
-  A <- c(x0 - len_left, y0)
-  # 3 mm down
-  B <- c(A[1], A[2] - down1)
-  # 5 mm at 45° left-down
-  off <- diag45 / sqrt(2)
-  C <- c(B[1] - off, B[2] - off)
-  # 5 mm down
-  D <- c(C[1], C[2] - down2)
-  # 45° up-right until directly under the start (x == x0)
-  dx <- x0 - D[1]                # move this much in x and y
-  E  <- c(x0, D[2] + dx)
+draw_comb <- function(x, y) {
+  thin <- plywood_thickness_mm+1
+  thickA <- 4 * plywood_thickness_mm + 0.15 - 1
+  thickB <- 4 * plywood_thickness_mm + 0.15 - 0.5
+
+  source <- x
+  dest <- x+4
+  lines(c(source, dest), c(y, y))
+  draw_connector(dest, y)
+  source <- dest
   
-  # draw the polyline: S -> A -> B -> C -> D -> E -> S
-  lines(c(S[1], A[1]), c(S[2], A[2]))
-  lines(c(A[1], B[1]), c(A[2], B[2]))
-  lines(c(B[1], C[1]), c(B[2], C[2]))
-  lines(c(C[1], D[1]), c(C[2], D[2]))
-  lines(c(D[1], E[1]), c(D[2], E[2]))
-  lines(c(E[1], S[1]), c(E[2], S[2]))
-
-
-}
-
-
-
-
-
-# Three adjacent sheets: 42x9, 42x18, 42x5 stacked one on another
-draw_three_sheets <- function(x0, y0) {
-  draw_rectangle(x0, y0,     42,  9)   # 42×9
-  draw_rectangle(x0, y0 + 9, 42, 18)   # 42×18 just below
-  draw_rectangle(x0, y0 + 27,42,  5)   # 42×5  just below
+  dest <- x+4+ thin
+  lines(c(source, dest), c(y+10, y+10))
+  draw_connector(dest, y)
+  source <- dest
+  
+  dest <- x+4+ thin + thickA
+  lines(c(source, dest), c(y, y))
+  draw_connector(dest, y)
+  source <- dest
+  
+  dest <- x+4+ 2*thin + thickA
+  lines(c(source, dest), c(y+10, y+10))
+  draw_connector(dest, y)
+  source <- dest
+  
+  dest <- x+4+ 2*thin + 2*thickA
+  lines(c(source, dest), c(y, y))
+  draw_connector(dest, y)
+  source <- dest
+  
+  dest <- x+4+ 3*thin + 2*thickA
+  lines(c(source, dest), c(y+10, y+10))
+  draw_connector(dest, y)
+  source <- dest
+  
+  dest <- x+4+ 3*thin + 2*thickA + thickB
+  lines(c(source, dest), c(y, y))
+  draw_connector(dest, y, 16)
+  
+  lines(c(dest, x), c(y+16, y+16))
+  draw_connector(x, y, 16)
 }
 
 draw_shaft_support <- function(x, y) {
@@ -481,6 +485,13 @@ draw_two_circles <- function(x,y) {
   draw_arc(x, y, shaft_r_mm + arbitrary_thickness_mm, 0, 2*pi, n=256)
 }
 
+
+draw_two_rectangles <- function(x, y) {
+  height <- 4 + 2*plywood_thickness_mm
+  draw_rectangle(x, y, 16, height)
+  draw_rectangle(x+3, y+plywood_thickness_mm, 10, plywood_thickness_mm)
+  return(height)
+}
 
 open.pdf <- function(title, width_in_mm, height_in_mm, margin_in_mm) {
   pdf(file=title, width=(width_in_mm + 2 * margin_in_mm) / 25.4, height=(height_in_mm + 2 * margin_in_mm) / 25.4 )   #units: inches
@@ -564,16 +575,9 @@ draw_dial(3*r_mm+10, r_mm+5, r_mm, shaft_r_mm, T, control=TRUE)
 draw_dial(5*r_mm+15, r_mm+5, r_mm, shaft_r_mm, T, control=TRUE)
 close.pdf()
 
-open.pdf("design_PDFs/small_parts.pdf", 120, 140, 10)
-for (i in 1:6)
-  draw_small_support(7+i*6,12)
+open.pdf("design_PDFs/small_parts_A.pdf", 120, 140, 10)
 
-for (i in 1:6)
-  draw_L(i*7,21)
 
-draw_three_sheets(3,21)
-
-draw_three_separators(3, 50)
 draw_shaft_support(0, 72)
 draw_shaft_support(dial_opening_depth, 70)
 draw_shaft_support(dial_opening_depth*2, 70)
@@ -581,6 +585,23 @@ draw_shaft_support(dial_opening_depth*2, 70-1.5*h_mm)
 draw_shaft_support(dial_opening_depth*2, 70-3*h_mm)
 draw_shaft_support(dial_opening_depth*2, 70+1.5*h_mm)
 
+
 draw_two_circles(52,40)
 
 close.pdf()
+
+open.pdf("design_PDFs/small_parts_B.pdf", 140, 90, 10)
+
+draw_three_separators(16, 52)
+draw_rectangle(16, 0, 90, 10)
+draw_rectangle(16, 10, 90, 10)
+
+height <- draw_two_rectangles(0,0)
+for (i in 1:3)
+  draw_two_rectangles(0, i*height)
+
+draw_comb(16, 20)
+draw_comb(16, 36)
+
+close.pdf()
+
